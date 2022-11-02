@@ -1,0 +1,24 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Product {
+  id Int [pk, increment]
+  title String [not null]
+  price Int [not null]
+  description String [not null]
+  category String [not null]
+  rating Rating [not null]
+  ratingId Int [unique, not null]
+  image String [not null]
+  longDescription String [not null]
+}
+
+Table Rating {
+  id Int [pk, increment]
+  rate Float [not null]
+  count Int [not null]
+  product Product
+}
+
+Ref: Product.ratingId - Rating.id
