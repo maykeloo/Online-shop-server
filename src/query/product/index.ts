@@ -1,3 +1,4 @@
+import { Product as ProductInterface } from "@prisma/client"
 import { Context } from "../../index"
 
 export const Product = {
@@ -8,5 +9,13 @@ export const Product = {
                   }
             })
             return rating
+      },
+      image: async(parent: ProductInterface, __: any, { prisma }: Context) => {
+            const image = await prisma.image.findUnique({
+                  where: {
+                        id: parent.imageId
+                  }
+            })
+            return image
       }
 }

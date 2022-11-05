@@ -3,15 +3,23 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
   type Query {
     products: [Product!]!
+    productsCount: Int
+    product(slug: String!): ProductPayload!
+  }
+
+  type Mutation {
+    addProduct(product: InputAddProduct!): ProductPayload!
   }
 
   type Product {
     id: ID!
     title: String!
     price: Int!
+    slug:  String!
     description: String!
     category: String!
-    image: String!
+    image: Image!
+    imageId: ID!
     longDescription: String!
     rating: Rating!
   }
@@ -20,20 +28,32 @@ export const typeDefs = gql`
     rate: Float
     count: Int
     product: Product
-    productId: Int
+    productId: ID
   }
 
-  type Mutation {
-    addProduct(product: InputAddProduct!): AddProductPayload!
+  type Image {
+    url:       String
+    alt:       String
+    width:     Int
+    height:    Int
+    product:   Product
+    productId: ID
   }
 
-  type AddProductPayload {
-    product: Product
-    errors: Errors
+  input ImageInput {
+    url:       String
+    alt:       String
+    width:     Int
+    height:    Int
   }
 
   type Errors {
-    messages: [String!]!
+    messages: String
+  }
+
+  type ProductPayload {
+    product: Product
+    errors: [Errors]!
   }
 
   input InputAddProduct {
@@ -41,7 +61,7 @@ export const typeDefs = gql`
     price: Int!
     description: String!
     category: String!
-    image: String!
     longDescription: String!
+    image: ImageInput!
   }
 `;

@@ -6,11 +6,13 @@ Table Product {
   id Int [pk, increment]
   title String [not null]
   price Int [not null]
+  slug String [not null]
   description String [not null]
   category String [not null]
   rating Rating [not null]
   ratingId Int [unique, not null]
-  image String [not null]
+  image Image [not null]
+  imageId Int [unique, not null]
   longDescription String [not null]
 }
 
@@ -21,4 +23,15 @@ Table Rating {
   product Product
 }
 
+Table Image {
+  id Int [pk, increment]
+  url String [not null]
+  alt String [not null]
+  width Int [not null]
+  height Int [not null]
+  product Product
+}
+
 Ref: Product.ratingId - Rating.id
+
+Ref: Product.imageId - Image.id

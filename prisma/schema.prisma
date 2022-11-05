@@ -18,17 +18,28 @@ model Product {
   id              Int    @id @default(autoincrement())
   title           String
   price           Int
+  slug            String
   description     String
   category        String
-  rating          Rating  @relation(fields: [ratingId], references: [id]) 
-  ratingId        Int     @unique
-  image           String
+  rating          Rating @relation(fields: [ratingId], references: [id])
+  ratingId        Int    @unique
+  image           Image  @relation(fields: [imageId], references: [id])
+  imageId         Int    @unique
   longDescription String
 }
 
 model Rating {
-  id              Int     @id @default(autoincrement())
-  rate            Float
-  count           Int
-  product         Product?
+  id      Int      @id @default(autoincrement())
+  rate    Float
+  count   Int
+  product Product?
+}
+
+model Image {
+  id      Int      @id @default(autoincrement())
+  url     String
+  alt     String
+  width   Int
+  height  Int
+  product Product?
 }
