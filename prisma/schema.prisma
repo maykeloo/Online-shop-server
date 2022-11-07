@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id              Int              @id @default(autoincrement())
+  title           String
+  price           Int
+  slug            String
+  description     String
+  category        String
+  rating          Rating           @relation(fields: [ratingId], references: [id])
+  ratingId        Int              @unique
+  image           Image            @relation(fields: [imageId], references: [id])
+  imageId         Int              @unique
+  longDescription String
+  owners            ProductsOnUser[]
+}
+
+model ProductsOnUser {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, productId])
+}
+
+model User {
+  id        Int              @id @default(autoincrement())
+  email     String           @unique
+  name      String
+  nameEN    String
+  password  String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  cartProducts  ProductsOnUser[]
+}
+
+model Rating {
+  id      Int      @id @default(autoincrement())
+  rate    Float
+  count   Int
+  product Product?
+}
+
+model Image {
+  id      Int      @id @default(autoincrement())
+  url     String
+  alt     String
+  width   Int
+  height  Int
+  product Product?
+}

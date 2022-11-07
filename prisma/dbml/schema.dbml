@@ -1,0 +1,65 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Product {
+  id Int [pk, increment]
+  title String [not null]
+  price Int [not null]
+  slug String [not null]
+  description String [not null]
+  category String [not null]
+  rating Rating [not null]
+  ratingId Int [unique, not null]
+  image Image [not null]
+  imageId Int [unique, not null]
+  longDescription String [not null]
+  owners ProductsOnUser [not null]
+}
+
+Table ProductsOnUser {
+  user User [not null]
+  userId Int [not null]
+  product Product [not null]
+  productId Int [not null]
+  assignedAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (userId, productId) [pk]
+  }
+}
+
+Table User {
+  id Int [pk, increment]
+  email String [unique, not null]
+  name String [not null]
+  nameEN String [not null]
+  password String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  cartProducts ProductsOnUser [not null]
+}
+
+Table Rating {
+  id Int [pk, increment]
+  rate Float [not null]
+  count Int [not null]
+  product Product
+}
+
+Table Image {
+  id Int [pk, increment]
+  url String [not null]
+  alt String [not null]
+  width Int [not null]
+  height Int [not null]
+  product Product
+}
+
+Ref: Product.ratingId - Rating.id
+
+Ref: Product.imageId - Image.id
+
+Ref: ProductsOnUser.userId > User.id
+
+Ref: ProductsOnUser.productId > Product.id
