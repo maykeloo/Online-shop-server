@@ -56,7 +56,7 @@ export const Products = {
     return {
       product: productItem,
       errors: {
-        messages: [],
+        message: [],
       },
     };
   },

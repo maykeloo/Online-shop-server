@@ -9,19 +9,32 @@ export const typeDefs = gql`
 
   type Mutation {
     addProduct(product: InputAddProduct!): ProductPayload!
+    addToFavorite(productId: ID!): FavoritePayload!
+    signUp(user: SignUpInput!): UserPayload!
+    signIn(user: SignInInput!): UserPayload!
   }
 
   type Product {
     id: ID!
     title: String!
     price: Int!
-    slug:  String!
+    slug: String!
     description: String!
     category: String!
     image: Image!
     imageId: ID!
     longDescription: String!
     rating: Rating!
+  }
+
+  type UserPayload {
+    errors: [Errors]!
+    token: String
+  }
+
+  type FavoritePayload {
+    userId: Int
+    productId: Int
   }
 
   type Rating {
@@ -32,23 +45,23 @@ export const typeDefs = gql`
   }
 
   type Image {
-    url:       String
-    alt:       String
-    width:     Int
-    height:    Int
-    product:   Product
+    url: String
+    alt: String
+    width: Int
+    height: Int
+    product: Product
     productId: ID
   }
 
   input ImageInput {
-    url:       String
-    alt:       String
-    width:     Int
-    height:    Int
+    url: String
+    alt: String
+    width: Int
+    height: Int
   }
 
   type Errors {
-    messages: String
+    message: String
   }
 
   type ProductPayload {
@@ -63,5 +76,16 @@ export const typeDefs = gql`
     category: String!
     longDescription: String!
     image: ImageInput!
+  }
+
+  input SignUpInput {
+    name: String!
+    email: String!
+    password: String!
+  }
+
+  input SignInInput {
+    email: String!
+    password: String!
   }
 `;

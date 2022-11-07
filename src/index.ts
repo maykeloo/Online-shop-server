@@ -1,48 +1,38 @@
-import { ApolloServer, gql } from "apollo-server-express";
-import { Query } from "./query/index";
+import { ApolloServer } from "apollo-server";
+import { Query } from './query/index'
 import { typeDefs } from "./schema";
-import { Mutation, Product } from "./resolvers";
-import { PrismaClient, Prisma } from "@prisma/client";
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import http from "http";
-import express from "express";
-import cors from "cors";
+import { Mutation, Product } from './resolvers'
+import { PrismaClient, Prisma } from '@prisma/client'
+import { getUserFromToken } from "./utils/getUserFromToken";
+
 export interface Context {
-  prisma: PrismaClient<
-    Prisma.PrismaClientOptions,
-    never,
-    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-  >;
+  prisma: PrismaClient<Prisma.PrismaClientOptions, never, Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>,
+  userInfo: {
+      userId: number;
+  } | null,
 }
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
-const app = express();
+const server = new ApolloServer({
+      typeDefs,
+      resolvers: {
+            Query, 
+            Mutation,
+            Product
+      },
+      context: async ({ req }): Promise<Context> => {
+        const { headers } = req
+        const { authorization } = headers
+        const userInfo = await getUserFromToken(authorization!)
 
-app.use(cors());
-app.use(express.json());
+        return {
+            prisma,
+            userInfo,
+        }
+    }
+})
 
-const httpServer = http.createServer(app);
-const startApolloServer = async (app: any, httpServer: any) => {
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers: {
-      Query,
-      Mutation,
-      Product,
-    },
-    context: async (): Promise<Context> => {
-      return {
-        prisma,
-      };
-    },
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  });
+server.listen().then(({ url }: { url: string }) => console.log(`Server is running on ${url}.`))
 
-  await server.start();
-  server.applyMiddleware({ app });
-};
 
-startApolloServer(app, httpServer);
-
-export default httpServer;

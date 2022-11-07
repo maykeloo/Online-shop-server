@@ -19,7 +19,7 @@ export const Query = {
         product: null,
         errors: [
           {
-            messages: 'Product not found.'
+            message: 'Product not found.'
           }
         ]
       }
